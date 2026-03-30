@@ -32,16 +32,17 @@ EOL
 sed -i -e '/boardname=/r /tmp/appendtext.txt' friendlywrt/target/linux/rockchip/armv8/base-files/root/setup.sh
 # }}
 
-# {{ Add TurboACC (mufeng05 版) - 完整保留所有功能 + 修复 libnftnl 冲突
+# {{ Add TurboACC (mufeng05 版) - 完整保留所有功能 + 彻底解决 libnftnl 冲突
 (cd friendlywrt && {
     curl -sSL https://raw.githubusercontent.com/mufeng05/turboacc/main/add_turboacc.sh -o /tmp/add_turboacc.sh
     bash /tmp/add_turboacc.sh
 })
 
-# === 关键修复：跳过冲突的 libnftnl fullcone 补丁（FriendlyWrt 24.10 已内置部分支持）===
+# === 彻底删除所有可能冲突的 fullcone 补丁（关键修复）===
+rm -f friendlywrt/package/libs/libnftnl/patches/*fullcone* || true
 rm -f friendlywrt/package/libs/libnftnl/patches/999-01-libnftnl-add-fullcone-expression-support.patch || true
 
-# === 完整保留 TurboACC 所有功能（Fullcone + Shortcut-FE + BBR）===
+# === 完整保留 TurboACC 所有功能 ===
 cat >> configs/rockchip/01-nanopi <<EOL
 CONFIG_PACKAGE_luci-app-turboacc=y
 CONFIG_TURBOACC_INCLUDE_FULLCONE=y
