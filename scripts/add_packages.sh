@@ -31,3 +31,19 @@ function init_theme() {
 EOL
 sed -i -e '/boardname=/r /tmp/appendtext.txt' friendlywrt/target/linux/rockchip/armv8/base-files/root/setup.sh
 # }}
+
+# {{ Add TurboACC (mufeng05 版，支持 24.10)
+(cd friendlywrt && {
+    curl -sSL https://raw.githubusercontent.com/mufeng05/turboacc/main/add_turboacc.sh -o /tmp/add_turboacc.sh
+    bash /tmp/add_turboacc.sh
+})
+
+# 强制启用 luci-app-turboacc 及其常用功能（FullCone NAT + BBR + 流量卸载）
+cat >> configs/rockchip/01-nanopi <<EOL
+CONFIG_PACKAGE_luci-app-turboacc=y
+CONFIG_TURBOACC_INCLUDE_FULLCONE=y
+CONFIG_TURBOACC_INCLUDE_SHORTCUT_FE=y
+CONFIG_TURBOACC_INCLUDE_BBR=y
+CONFIG_PACKAGE_nft-fullcone=y
+EOL
+# }}
