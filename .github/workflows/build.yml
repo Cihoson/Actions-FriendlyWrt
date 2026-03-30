@@ -1,6 +1,28 @@
 on:
   watch:
     types: started
+ # === 增加手动触发按钮（关键！以后每次都能直接点 Run workflow）===
+  workflow_dispatch:
+    inputs:
+      VERSION:
+        description: 'FriendlyWrt 版本'
+        required: true
+        default: '24.10'
+      SET:
+        description: '镜像类型'
+        required: true
+        default: 'non-docker'
+        type: choice
+        options:
+          - non-docker
+          - docker
+      CPU:
+        description: 'CPU 平台'
+        required: true
+        default: 'rk3568'
+        type: choice
+        options:
+          - rk3568
 jobs:
   prepare_release:
     runs-on: ubuntu-22.04
